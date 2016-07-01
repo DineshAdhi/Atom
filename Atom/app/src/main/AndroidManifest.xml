@@ -18,7 +18,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".splash_activity" />
-        <activity android:name=".signup_activity"></activity>
+        <activity android:name=".signup_activity" />
+        <activity android:name=".userlist_activity"></activity>
     </application>
 
 </manifest>

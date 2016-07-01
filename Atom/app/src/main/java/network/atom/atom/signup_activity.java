@@ -1,5 +1,6 @@
 package network.atom.atom;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -35,6 +36,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
     EditText signupInputField;
     Button signupNextButton,signupBackButton;
     Uri photoURL;
+    ProgressDialog dialog;
     int count=0;
 
     @Override
@@ -90,6 +92,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        dialog.dismiss();
                         Toast.makeText(signup_activity.this,"Accoung Created Successfully, Please sign in to continue",Toast.LENGTH_LONG).show();
                         finish();
                     }
@@ -180,6 +183,9 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
     }
 
     private void signupUser() {
+        dialog.setMessage("Signing up...");
+        dialog.setTitle("Connecting to the backend");
+        dialog.show();
         Log.e("Email",dumper.signupEmail.toString());
         Log.e("Pass",dumper.signupPassword.toString());
         Log.e("Mobile",dumper.signupMobile.toString());
@@ -194,6 +200,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                dialog.dismiss();
                 Toast.makeText(signup_activity.this,e.getMessage(),Toast.LENGTH_LONG).show();
                 count=0;
                 signupInputLayout.setHint("Email");
@@ -210,6 +217,6 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         signupInputField=(EditText)findViewById(R.id.signupInputField);
         signupNextButton=(Button)findViewById(R.id.signupnextButton);
         signupBackButton=(Button)findViewById(R.id.signupbackButton);
-
+        dialog=new ProgressDialog(signup_activity.this);
     }
 }
