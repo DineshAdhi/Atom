@@ -34,9 +34,9 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_activity);
+        setContentView(R.layout.activity_signup_activity);
 
-        initialize();
+
         buttonActions();
 
         profilepicImageView.setOnClickListener(new View.OnClickListener() {
@@ -96,6 +96,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         {
             //mobile
             dumper.signupMobile=signupInputField.getText().toString();
+            signupNextButton.setText("Sign up");
             signupUser();
         }
     }
@@ -113,5 +114,6 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         signupInputField=(EditText)findViewById(R.id.signupInputField);
         signupNextButton=(Button)findViewById(R.id.signupnextButton);
         signupBackButton=(Button)findViewById(R.id.signupbackButton);
+
     }
 }
