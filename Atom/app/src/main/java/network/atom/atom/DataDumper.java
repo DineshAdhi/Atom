@@ -1,6 +1,10 @@
 package network.atom.atom;
 
+import android.app.ProgressDialog;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -27,5 +31,7 @@ public interface DataDumper {
         FirebaseAuth mAuth=FirebaseAuth.getInstance();
         FirebaseStorage storage=FirebaseStorage.getInstance();
         StorageReference storageReference=storage.getReferenceFromUrl("gs://atom-69580.appspot.com");
+        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference=database.getReference();
     }
 }

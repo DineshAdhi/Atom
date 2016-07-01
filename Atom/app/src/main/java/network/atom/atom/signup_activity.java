@@ -5,9 +5,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +17,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -47,7 +51,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         }
     }
 
-    private void UploadImage(ImageView imageView)  {
+    private void UploadImageAndData(ImageView imageView)  {
 
         StorageReference imageReference=services.storageReference.child("images/UserProfilePic");
 
@@ -65,9 +69,15 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.e("ProfileImage","ProfilePic uploaded");
                 Log.e("SnapShot",taskSnapshot.toString());
+                UploadData();
             }
         });
 
+    }
+
+    public void UploadData()
+    {
+        
     }
 
     @Override
@@ -146,7 +156,23 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         Log.e("Mobile",dumper.signupMobile.toString());
         Log.e("Username",dumper.signupUsername.toString());
 
-        UploadImage(profilepicImageView);
+        services.mAuth.createUserWithEmailAndPassword(dumper.signupEmail,dumper.signupPassword)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        UploadImageAndData(profilepicImageView);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(signup_activity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+                count=0;
+                signupInputLayout.setHint("Email");
+                signupInputField.setText("");
+                signupInputField.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+            }
+        });
+
     }
 
     private void initialize() {
