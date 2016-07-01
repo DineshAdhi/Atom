@@ -130,6 +130,16 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
                 }
             }
         });
+
+        signupBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                count=0;
+                signupInputField.setText("");
+                signupInputLayout.setHint("Email");
+                signupInputField.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+            }
+        });
     }
 
     private void signupAction() {
@@ -137,6 +147,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         {
             //e-mail
             signupInputLayout.setHint("Username");
+            signupInputField.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
             dumper.signupEmail=signupInputField.getText().toString();
             signupInputField.setText("");
             count++;
@@ -145,6 +156,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         {
             //username
             signupInputLayout.setHint("Password");
+            signupInputField.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             dumper.signupUsername=signupInputField.getText().toString();
             signupInputField.setText("");
             count++;
@@ -153,15 +165,15 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         {
             //password
             signupInputLayout.setHint("Mobile");
+            signupInputField.setInputType(InputType.TYPE_CLASS_NUMBER);
             dumper.signupPassword=signupInputField.getText().toString();
-            signupInputField.setText("");
+            signupNextButton.setText("Sign up");
             count++;
         }
         else if(count==3)
         {
             //mobile
             dumper.signupMobile=signupInputField.getText().toString();
-            signupNextButton.setText("Sign up");
             signupUser();
         }
     }
