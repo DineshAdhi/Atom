@@ -25,6 +25,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class signup_activity extends AppCompatActivity implements DataDumper {
 
@@ -32,6 +34,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
     TextInputLayout signupInputLayout;
     EditText signupInputField;
     Button signupNextButton,signupBackButton;
+    Uri photoURL;
     int count=0;
 
     @Override
@@ -69,6 +72,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.e("ProfileImage","ProfilePic uploaded");
                 Log.e("SnapShot",taskSnapshot.toString());
+                photoURL=taskSnapshot.getDownloadUrl();
                 UploadData();
             }
         });
@@ -77,7 +81,19 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
 
     public void UploadData()
     {
-        
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("Username",dumper.signupUsername);
+        map.put("Email",dumper.signupEmail);
+        map.put("PhotoURL",photoURL.toString());
+        map.put("Mobile",dumper.signupMobile);
+        services.databaseReference.child(dumper.signupEmail).setValue(map)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(signup_activity.this,"Accoung Created Successfully, Please sign in to continue",Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                });
     }
 
     @Override
