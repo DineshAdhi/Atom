@@ -1,8 +1,11 @@
 package network.atom.atom;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,12 +21,33 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
     int count=0;
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==0)
+        {
+            Uri uri=data.getData();
+            profilepicImageView.setImageURI(uri);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_activity);
 
         initialize();
         buttonActions();
+
+        profilepicImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setType("images/*");
+                startActivityForResult(intent,0);
+            }
+        });
 
     }
 
@@ -72,7 +96,15 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         {
             //mobile
             dumper.signupMobile=signupInputField.getText().toString();
+            signupUser();
         }
+    }
+
+    private void signupUser() {
+        Log.e("Email",dumper.signupEmail.toString());
+        Log.e("Pass",dumper.signupPassword.toString());
+        Log.e("Mobile",dumper.signupMobile.toString());
+        Log.e("Username",dumper.signupUsername.toString());
     }
 
     private void initialize() {
