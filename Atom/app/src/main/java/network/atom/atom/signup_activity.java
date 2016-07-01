@@ -56,7 +56,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
 
     private void UploadImageAndData(ImageView imageView)  {
 
-        StorageReference imageReference=services.storageReference.child("images/UserProfilePic");
+        StorageReference imageReference=services.storageReference.child("images/"+dumper.signupUsername);
 
         imageView.setDrawingCacheEnabled(true);
         imageView.buildDrawingCache();
@@ -86,7 +86,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         map.put("Email",dumper.signupEmail);
         map.put("PhotoURL",photoURL.toString());
         map.put("Mobile",dumper.signupMobile);
-        services.databaseReference.child(dumper.signupEmail).setValue(map)
+        services.databaseReference.child("UserDetails").push().setValue(map)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -168,6 +168,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
             signupInputField.setInputType(InputType.TYPE_CLASS_NUMBER);
             dumper.signupPassword=signupInputField.getText().toString();
             signupNextButton.setText("Sign up");
+            signupInputField.setText("");
             count++;
         }
         else if(count==3)
