@@ -1,7 +1,10 @@
 package network.atom.atom;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class signup_activity extends AppCompatActivity implements DataDumper {
 
@@ -27,8 +37,37 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         if(requestCode==0)
         {
             Uri uri=data.getData();
-            profilepicImageView.setImageURI(uri);
+            try {
+                Bitmap bitmap= MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+                profilepicImageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
+    }
+
+    private void UploadImage(ImageView imageView)  {
+
+        StorageReference imageReference=services.storageReference.child("images/UserProfilePic");
+
+        imageView.setDrawingCacheEnabled(true);
+        imageView.buildDrawingCache();
+
+        Bitmap bitmap=imageView.getDrawingCache();
+        ByteArrayOutputStream baos=new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+        byte[] data=baos.toByteArray();
+
+        UploadTask uploadTask=imageReference.putBytes(data);
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.e("ProfileImage","ProfilePic uploaded");
+                Log.e("SnapShot",taskSnapshot.toString());
+            }
+        });
+
     }
 
     @Override
@@ -36,7 +75,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup_activity);
 
-
+        initialize();
         buttonActions();
 
         profilepicImageView.setOnClickListener(new View.OnClickListener() {
@@ -44,7 +83,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
             public void onClick(View view) {
                 Intent intent=new Intent();
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                intent.setType("images/*");
+                intent.setType("image/*");
                 startActivityForResult(intent,0);
             }
         });
@@ -106,6 +145,8 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         Log.e("Pass",dumper.signupPassword.toString());
         Log.e("Mobile",dumper.signupMobile.toString());
         Log.e("Username",dumper.signupUsername.toString());
+
+        UploadImage(profilepicImageView);
     }
 
     private void initialize() {
