@@ -44,7 +44,35 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
     }
 
     private void signupAction() {
-        if()
+        if(count==0)
+        {
+            //e-mail
+            signupInputLayout.setHint("Username");
+            dumper.signupEmail=signupInputField.getText().toString();
+            signupInputField.setText("");
+            count++;
+        }
+        else if(count==1)
+        {
+            //username
+            signupInputLayout.setHint("Password");
+            dumper.signupUsername=signupInputField.getText().toString();
+            signupInputField.setText("");
+            count++;
+        }
+        else if(count==2)
+        {
+            //password
+            signupInputLayout.setHint("Mobile");
+            dumper.signupPassword=signupInputField.getText().toString();
+            signupInputField.setText("");
+            count++;
+        }
+        else if(count==3)
+        {
+            //mobile
+            dumper.signupMobile=signupInputField.getText().toString();
+        }
     }
 
     private void initialize() {
