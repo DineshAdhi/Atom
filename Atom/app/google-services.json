@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "364090049164",
+    "firebase_url": "https://atom-69580.firebaseio.com",
+    "project_id": "atom-69580",
+    "storage_bucket": "atom-69580.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:364090049164:android:e5f050f09cbcdaf4",
+        "android_client_info": {
+          "package_name": "network.atom.atom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "364090049164-tfkvrjfisdt8uo3ccgii0ouimgqtc223.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "network.atom.atom",
+            "certificate_hash": "FA812B5D5EF55808EB61C3A3164F75BB35B05CF7"
+          }
+        },
+        {
+          "client_id": "364090049164-2q45l51163hqhvr3493eg55703jcbsv4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBssv73HdfI9jhxcDw0LfeTmwdFgs6utN8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "364090049164-2q45l51163hqhvr3493eg55703jcbsv4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

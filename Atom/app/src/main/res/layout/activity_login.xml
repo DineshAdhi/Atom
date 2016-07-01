@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    tools:context=".login_activity"
+    android:orientation="vertical">
+
+  <android.support.v7.widget.FitWindowsFrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="300dp"
+      android:hapticFeedbackEnabled="true"
+      android:background="@color/colorPrimary"
+      android:id="@+id/view">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Atom"
+        android:textSize="27dp"
+        android:textColor="@color/textWhileColor"
+        android:layout_gravity="bottom"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"/>
+
+  </android.support.v7.widget.FitWindowsFrameLayout>
+
+  <RelativeLayout
+      android:layout_width="350dp"
+      android:layout_height="fill_parent"
+      android:layout_below="@+id/view"
+      android:layout_gravity="center_horizontal"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentEnd="true">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_marginTop="45dp"
+        android:layout_height="70dp"
+        android:hint="Email"
+        android:layout_width="match_parent"
+        android:id="@+id/emailLayout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+      <EditText
+          android:layout_width="300dp"
+          android:textSize="15dp"
+          android:layout_marginLeft="23dp"
+          android:layout_gravity="center_vertical"
+          android:layout_height="60dp"
+          android:id="@+id/emailInputField"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.v7.widget.AppCompatButton
+        android:layout_width="184dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_height="65dp"
+        android:text="Next"
+        android:textColor="@color/textWhileColor"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/nextButton" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:layout_width="184dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_height="65dp"
+        android:text="Exit"
+        android:id="@+id/backButton"
+        android:textColor="@color/textWhileColor"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="300dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="30dp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:textSize="12.5dp"
+        android:layout_below="@+id/emailLayout"
+        android:text="or create account"
+        android:textColor="@color/colorPrimary"
+        android:id="@+id/signupLink"/>
+
+
+  </RelativeLayout>
+
+
+
+
+</RelativeLayout>
