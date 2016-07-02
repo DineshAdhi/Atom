@@ -23,12 +23,14 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +44,7 @@ public class login_activity extends AppCompatActivity implements DataDumper {
     ImageView signinProfilePicImageView;
     int clickCount=0;
     ProgressDialog dialog;
+    TextView signinEmailTextView,welcomeNoteTextView;
 
     public void initialize()
     {
@@ -52,6 +55,8 @@ public class login_activity extends AppCompatActivity implements DataDumper {
         signupLink=(TextView)findViewById(R.id.signupLink);
         signinProfilePicImageView=(ImageView)findViewById(R.id.signinPicImageView);
         dialog=new ProgressDialog(login_activity.this);
+        signinEmailTextView=(TextView)findViewById(R.id.signinEmailTextView);
+        welcomeNoteTextView=(TextView)findViewById(R.id.welcomeNoteTextView);
     }
 
 
@@ -80,10 +85,12 @@ public class login_activity extends AppCompatActivity implements DataDumper {
                     if(clickCount==0)
                     {
                         setImage();
+                        dialog.setMessage("Checking your mail.. Please Wait");
+                        dialog.setCanceledOnTouchOutside(false);
+                        dialog.show();
                         dumper.userEmail=inputField.getText().toString();
                         clickCount++;
                         nextButton.setText("Login");
-                        backButton.setText("Back");
                         emailLayout.setHint("Password");
                         inputField.setText("");
                     }
@@ -104,11 +111,7 @@ public class login_activity extends AppCompatActivity implements DataDumper {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               if(backButton.getText().toString().equals("Back"))
-               {
-                   clickCount=0;
-                   buttonClickFunction();
-               }
+                Intent 
             }
         });
 
@@ -130,9 +133,10 @@ public class login_activity extends AppCompatActivity implements DataDumper {
                 final Map<String,String> map=(Map<String, String>) dataSnapshot.getValue();
                 if(map.get("Email").equals(dumper.userEmail))
                 {
-                    String url=map.get("PhotoURL");
-                    Bitmap bitmap=new DownloadImage().doInBackground(url);
-                    signinProfilePicImageView.setImageBitmap(bitmap);
+                    signinEmailTextView.setText(map.get("Email"));
+                    signupLink.setVisibility(View.GONE);
+                    welcomeNoteTextView.setText("Welcome "+map.get("Username"));
+                    new DownloadImage().execute(map.get("PhotoURL"));
                 }
             }
 
@@ -177,5 +181,40 @@ public class login_activity extends AppCompatActivity implements DataDumper {
                     }
                 });
 
+    }
+
+    class DownloadImage extends AsyncTask<String,Void,Bitmap>
+    {
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+
+            Bitmap bitmap;
+
+            try {
+                URL url=new URL(strings[0]);
+                URLConnection conn=url.openConnection();
+                conn.connect();
+                InputStream is=conn.getInputStream();
+                BufferedInputStream bis=new BufferedInputStream(is);
+                bitmap=BitmapFactory.decodeStream(bis);
+                return bitmap;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            signinProfilePicImageView.setImageBitmap(bitmap);
+            findViewById(R.id.appTitleTextView).setVisibility(View.GONE);
+            dialog.dismiss();
+        }
     }
 }
