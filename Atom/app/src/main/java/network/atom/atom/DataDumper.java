@@ -1,12 +1,22 @@
 package network.atom.atom;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Created by dinesh10c04 on 30/6/16.
@@ -33,5 +43,37 @@ public interface DataDumper {
         StorageReference storageReference=storage.getReferenceFromUrl("gs://atom-69580.appspot.com");
         FirebaseDatabase database=FirebaseDatabase.getInstance();
         DatabaseReference databaseReference=database.getReference();
+    }
+
+    class DownloadImage extends AsyncTask<String,Void,Bitmap>
+    {
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            return downloadImage(strings[0]);
+        }
+
+
+
+        public Bitmap downloadImage(String urlString)
+        {
+            try {
+                URL url=new URL(urlString);
+                URLConnection connection=url.openConnection();
+                connection.connect();
+                InputStream is=connection.getInputStream();
+                BufferedInputStream bis=new BufferedInputStream(is);
+                Bitmap bitmap= BitmapFactory.decodeStream(bis);
+                bis.close();
+                is.close();
+                return bitmap;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
     }
 }

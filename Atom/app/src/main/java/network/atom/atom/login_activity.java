@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -123,24 +126,13 @@ public class login_activity extends AppCompatActivity implements DataDumper {
         services.databaseReference.child("UserDetails").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Map<String,Object> map=(Map<String, Object>) dataSnapshot.getValue();
-                if(map.get("Email").equals(dumper.signupEmail))
+                Log.e("Dumper Mail",dumper.userEmail);
+                final Map<String,String> map=(Map<String, String>) dataSnapshot.getValue();
+                if(map.get("Email").equals(dumper.userEmail))
                 {
-                    Log.e("Map",map.toString());
-                    try {
-                        findViewById(R.id.view).setVisibility(View.GONE);
-                        URL newurl=new URL(map.get("PhotoURL").toString());
-                        Bitmap bitmap= BitmapFactory.decodeStream(newurl.openConnection().getInputStream());
-                        signinProfilePicImageView.setImageBitmap(bitmap);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    catch (Exception e)
-                    {
-                        Log.e("Image Exception",e.getMessage());
-                    }
+                    String url=map.get("PhotoURL");
+                    Bitmap bitmap=new DownloadImage().doInBackground(url);
+                    signinProfilePicImageView.setImageBitmap(bitmap);
                 }
             }
 
@@ -166,6 +158,7 @@ public class login_activity extends AppCompatActivity implements DataDumper {
             }
         });
     }
+
 
     private void FirebaseLogin() {
         dialog.setMessage("Loggin in ..");
