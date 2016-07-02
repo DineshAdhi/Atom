@@ -111,7 +111,10 @@ public class login_activity extends AppCompatActivity implements DataDumper {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent 
+                Intent intent=new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
         });
 
@@ -134,8 +137,10 @@ public class login_activity extends AppCompatActivity implements DataDumper {
                 if(map.get("Email").equals(dumper.userEmail))
                 {
                     signinEmailTextView.setText(map.get("Email"));
-                    signupLink.setVisibility(View.GONE);
+                    signinEmailTextView.setVisibility(View.INVISIBLE);
                     welcomeNoteTextView.setText("Welcome "+map.get("Username"));
+                    welcomeNoteTextView.setVisibility(View.INVISIBLE);
+                    signupLink.setVisibility(View.GONE);
                     new DownloadImage().execute(map.get("PhotoURL"));
                 }
             }
@@ -214,6 +219,8 @@ public class login_activity extends AppCompatActivity implements DataDumper {
             super.onPostExecute(bitmap);
             signinProfilePicImageView.setImageBitmap(bitmap);
             findViewById(R.id.appTitleTextView).setVisibility(View.GONE);
+            signinEmailTextView.setVisibility(View.VISIBLE);
+            welcomeNoteTextView.setVisibility(View.VISIBLE);
             dialog.dismiss();
         }
     }
