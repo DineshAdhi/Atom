@@ -4,25 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingTop="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="network.atom.atom.signup_activity">
 
 
     <com.pkmmte.view.CircularImageView
         android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_height="248dp"
         android:layout_marginLeft="50dp"
         android:src="@drawable/profilepic"
+        android:backgroundTint="@color/colorPrimary"
         app:border="true"
         android:id="@+id/profilepicImageView"
         app:border_color="@color/colorPrimary"
         app:border_width="4dp"
-        app:shadow="true" />
+        app:shadow="true"
+        android:focusable="true"
+        app:selector="true"/>
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="250dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/background"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true">
 
@@ -38,7 +43,7 @@
 
      <android.support.design.widget.TextInputLayout
          android:layout_width="300dp"
-         android:layout_height="80dp"
+         android:layout_height="70dp"
          android:layout_centerVertical="true"
          android:layout_alignParentStart="true"
          android:hint="Email"
@@ -47,33 +52,32 @@
 
          <android.support.design.widget.TextInputEditText
              android:layout_width="match_parent"
-             android:layout_height="40dp"
+             android:layout_height="60dp"
              android:id="@+id/signupInputField"/>
 
      </android.support.design.widget.TextInputLayout>
 
-        <android.support.v7.widget.AppCompatButton
-            android:layout_width="184dp"
-            android:backgroundTint="@color/colorPrimary"
-            android:layout_height="65dp"
-            android:text="Next"
-            android:textColor="@color/textWhileColor"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/signupnextButton" />
-
-        <android.support.v7.widget.AppCompatButton
-            android:layout_width="184dp"
-            android:backgroundTint="@color/colorPrimary"
-            android:layout_height="65dp"
-            android:text="Try Again"
-            android:id="@+id/signupbackButton"
-            android:textColor="@color/textWhileColor"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true" />
-
     </RelativeLayout>
 
+    <android.support.v7.widget.AppCompatButton
+        android:layout_width="184dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_height="60dp"
+        android:text="Next"
+        android:textColor="@color/textWhileColor"
+        android:id="@+id/signupnextButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:layout_width="184dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_height="60dp"
+        android:text="Try Again"
+        android:id="@+id/signupbackButton"
+        android:textColor="@color/textWhileColor"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

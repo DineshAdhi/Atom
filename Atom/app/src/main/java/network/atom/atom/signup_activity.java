@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.RuntimeExecutionException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -28,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class signup_activity extends AppCompatActivity implements DataDumper {
 
@@ -42,18 +44,28 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        try{
+            if(requestCode==0)
+            {
+                Uri uri=data.getData();
+                try {
+                    Bitmap bitmap= MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+                    profilepicImageView.setImageBitmap(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-        if(requestCode==0)
-        {
-            Uri uri=data.getData();
-            try {
-                Bitmap bitmap= MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
-                profilepicImageView.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-
+            }
+        catch (NullPointerException e)
+        {
+            Toast.makeText(signup_activity.this,"Please Select an image to upload",Toast.LENGTH_SHORT).show();
         }
+        catch (RuntimeExecutionException e)
+        {
+            Toast.makeText(signup_activity.this,"Please Select an image to upload",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void UploadImageAndData(ImageView imageView)  {
@@ -88,6 +100,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         map.put("Email",dumper.signupEmail);
         map.put("PhotoURL",photoURL.toString());
         map.put("Mobile",dumper.signupMobile);
+        map.put("UserID",generateUserId(map.get("Username")));
         services.databaseReference.child("UserDetails").push().setValue(map)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -208,6 +221,26 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
                 signupInputField.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
             }
         });
+
+    }
+
+    public String generateUserId(String username)
+    {
+        try{
+            Random rand=new Random();
+            int randomNumber1=rand.nextInt((100000000-10000000)-1)+1;
+            int randomNumber2=rand.nextInt((100000000-10000000)-1)+1;
+
+            String userID=username+Integer.toString(randomNumber1)+Integer.toString(randomNumber2);
+
+            return userID;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
 
     }
 
