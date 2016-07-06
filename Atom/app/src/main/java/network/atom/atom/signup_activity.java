@@ -100,8 +100,9 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         map.put("Email",dumper.signupEmail);
         map.put("PhotoURL",photoURL.toString());
         map.put("Mobile",dumper.signupMobile);
-        map.put("UserID",generateUserId(map.get("Username")));
-        services.databaseReference.child("UserDetails").push().setValue(map)
+        String userId= generateUserId(map.get("Username"));
+        map.put("UserID",userId);
+        services.databaseReference.child("UserDetails/"+userId).setValue(map)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

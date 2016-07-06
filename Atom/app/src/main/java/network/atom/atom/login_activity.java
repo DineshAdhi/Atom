@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ public class login_activity extends AppCompatActivity implements DataDumper {
         signupLink = (TextView) findViewById(R.id.signupLink);
         signinProfilePicImageView = (ImageView) findViewById(R.id.signinPicImageView);
         dialog = new ProgressDialog(login_activity.this);
+        dialog.setCanceledOnTouchOutside(false);
         signinEmailTextView = (TextView) findViewById(R.id.signinEmailTextView);
         welcomeNoteTextView = (TextView) findViewById(R.id.welcomeNoteTextView);
     }
