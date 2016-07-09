@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="20dp"
     tools:context="network.atom.atom.friends_activity">
 
     <android.support.v7.widget.ListViewCompat
-        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:id="@+id/friendsListView"/>
 
 </RelativeLayout>

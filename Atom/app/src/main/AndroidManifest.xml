@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".login_activity"
+            android:name=".splash_activity"
             android:theme="@style/NoActionTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,16 +17,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".splash_activity" />
+        <activity android:name=".login_activity"
+            android:theme="@style/NoActionTheme"/>
         <activity android:name=".signup_activity" />
         <activity
             android:name=".tabs_activity"
-            android:theme="@style/TabTheme"/>
+            android:theme="@style/TabTheme" />
         <activity android:name=".posts_activity" />
         <activity android:name=".chats_activity" />
         <activity android:name=".friends_activity" />
         <activity android:name=".notifications_activity" />
-        <activity android:name=".profile_activity"></activity>
+        <activity android:name=".profile_activity" />
+        <activity android:name=".friends_profile_activity"></activity>
     </application>
 
 </manifest>

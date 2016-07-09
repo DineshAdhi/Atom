@@ -1,27 +1,39 @@
-<merge android:layout_height="90dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="80dp"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:paddingLeft="20dp"
+    android:paddingBottom="2dp"
+    android:layout_marginBottom="20dp"
+    android:paddingTop="15dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_height="70dp"
-        android:layout_width="70dp"
-        android:id="@+id/friendsImageView"/>
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/friendsProfileImageView"/>
+
     <android.support.v7.widget.AppCompatTextView
-        android:layout_height="40dp"
-        android:layout_width="250dp"
-        android:layout_marginLeft="70dp"
-        android:text="Dinesh Adhithya"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
         android:textAlignment="center"
-        android:gravity="center_vertical"
-        android:textStyle="bold"
-        android:id="@+id/friendNameTextView"
-        android:layout_toEndOf="@+id/friendsImageView"/>
+        android:gravity="center"
+        android:textSize="17dp"
+        android:clickable="true"
+        android:text="Dinesh Adhithya"
+        android:layout_alignParentTop="true"
+        android:id="@+id/friendsNameTextView"
+        android:layout_toEndOf="@+id/friendsProfileImageView" />
+
     <android.support.v7.widget.AppCompatButton
-        android:layout_height="40dp"
-        android:layout_width="150dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="200dp"
-        android:background="@drawable/background"
-        android:text="AddFriend"
-        android:id="@+id/addFriendButton"/>
-</merge>
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:background="@color/colorPrimary"
+        android:text="Add Friend"
+        android:backgroundTint="@color/colorPrimary"
+        android:textSize="8dp"
+        android:id="@+id/addFriendButton"
+        android:textColor="@color/textWhileColor"
+        android:layout_marginEnd="43dp"
+        android:layout_alignBottom="@+id/friendsProfileImageView"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

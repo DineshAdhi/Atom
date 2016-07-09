@@ -8,6 +8,7 @@
     <android.support.design.widget.TabLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:elevation="10dp"
         android:background="@color/colorPrimary"
         android:id="@+id/tabsId"
         xmlns:app="http://schemas.android.com/apk/res-auto"

@@ -20,10 +20,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -33,6 +38,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Map;
 
+import butterknife.BindView;
+
 public class login_activity extends AppCompatActivity implements DataDumper {
 
 
@@ -40,7 +47,7 @@ public class login_activity extends AppCompatActivity implements DataDumper {
     EditText inputField;
     Button exitButton,nextButton;
     TextView signupLink;
-    ImageView signinProfilePicImageView;
+    ImageView signinProfilePicImageView;        // Required View for the activity
     int clickCount=0;
     ProgressDialog dialog;
     TextView signinEmailTextView,welcomeNoteTextView;
@@ -52,11 +59,12 @@ public class login_activity extends AppCompatActivity implements DataDumper {
         exitButton = (Button) findViewById(R.id.backButton);
         nextButton = (Button) findViewById(R.id.nextButton);
         signupLink = (TextView) findViewById(R.id.signupLink);
-        signinProfilePicImageView = (ImageView) findViewById(R.id.signinPicImageView);
+        signinProfilePicImageView = (ImageView) findViewById(R.id.signinPicImageView);  // Initialization of the required fields
         dialog = new ProgressDialog(login_activity.this);
         dialog.setCanceledOnTouchOutside(false);
         signinEmailTextView = (TextView) findViewById(R.id.signinEmailTextView);
         welcomeNoteTextView = (TextView) findViewById(R.id.welcomeNoteTextView);
+        findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
     }
 
 
@@ -65,12 +73,12 @@ public class login_activity extends AppCompatActivity implements DataDumper {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        initialize();  // Initiallizing and declaring the UI elements throught a function
-        buttonClickFunction(); // This function takes care of the clicking action of the buttons
+        initialize();   // Initiallizing and declaring the UI elements throught a function
+        buttonClickFunction();  // This function takes care of the clicking action of the buttons
 
     }
 
-    private void buttonClickFunction() {
+    private void buttonClickFunction() { // This function handles all the clicking function in a particular activity
 
         nextButton.setText("Next");
         exitButton.setText("Exit");
@@ -85,19 +93,20 @@ public class login_activity extends AppCompatActivity implements DataDumper {
                     if(clickCount==0)
                     {
                         dumper.userEmail=inputField.getText().toString();
-                        verifyEmail();
+                        verifyEmail();                                      // This ensures that the user entered an existing email
                         dialog.setMessage("Verifying your mail.. Please Wait");
                         dialog.setCanceledOnTouchOutside(false);
                         dialog.show();
-                        clickCount++;
-                        nextButton.setText("Login");
-                        emailLayout.setHint("Password");
+                        clickCount++;                                                   // This increments the variable clickCount based on the click
+                        nextButton.setText("Login");                                    // directly changes the UI from E-mail input to Password.
+                        emailLayout.setHint("Password");                                // A single editText field is used to obtain both e-mail and password
                         inputField.setText("");
+                        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                     }
                    else {
-                        dumper.userPassword = inputField.getText().toString();
+                        dumper.userPassword = inputField.getText().toString();          // When the clickcount is incremented again, it starts the login() function
                         clickCount++;
-                        FirebaseLogin();
+                        FirebaseLogin();                // This directly starts the Tabs activity after authenticating the user
                     }
 
                 }
@@ -112,7 +121,7 @@ public class login_activity extends AppCompatActivity implements DataDumper {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.addCategory(Intent.CATEGORY_HOME);                   //This exits the app
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
@@ -121,19 +130,19 @@ public class login_activity extends AppCompatActivity implements DataDumper {
         signupLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(login_activity.this,signup_activity.class);
+                Intent intent=new Intent(login_activity.this,signup_activity.class); // This  starts signup_activity
                 startActivity(intent);
             }
         });
     }
 
-    private void verifyEmail() {
-        String Password="Dinsh";
+    private void verifyEmail() {  // This function uses a dummy password to check whether the email is registered
+        String Password="Dinsh";  // A dummy password
 
         services.mAuth.signInWithEmailAndPassword(dumper.userEmail,Password).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                if(e.getMessage().equals("There is no user record corresponding to this identifier. The user may have been deleted."))
+                if(e.getMessage().equals("There is no user record corresponding to this identifier. The user may have been deleted.")) // This is an automated message that firebase throws when the password is wrong
                 {
                     dialog.dismiss();
                     signupLink.setVisibility(View.VISIBLE);
@@ -144,13 +153,13 @@ public class login_activity extends AppCompatActivity implements DataDumper {
                 }
                 else
                 {
-                    setImage();
+                    setImage();     // If the email is authenticated, I am setting up the users image on the UI.
                 }
             }
         });
     }
 
-    private void setImage() {
+    private void setImage() {       // Sets up the image from the Firebase Storage API.
         Log.e("Ser Image","Called");
         services.databaseReference.child("UserDetails").addChildEventListener(new ChildEventListener() {
             @Override
@@ -159,14 +168,31 @@ public class login_activity extends AppCompatActivity implements DataDumper {
                 Log.e(Integer.toString((int)dataBaseChilderCount),Integer.toString((int)childerCount));
                 final Map<String,String> map=(Map<String, String>) dataSnapshot.getValue();
                 childerCount++;
-                if(map.get("Email").equals(dumper.userEmail))
+                if(map.get("Email").equals(dumper.userEmail))   // Looks for the authenticated Email if it exists in our users database
                 {
                     signinEmailTextView.setText(map.get("Email"));
+                    dumper.currentUserId=map.get("UserID");
                     signinEmailTextView.setVisibility(View.INVISIBLE);
                     welcomeNoteTextView.setText("Welcome "+map.get("Username"));
                     welcomeNoteTextView.setVisibility(View.INVISIBLE);
                     signupLink.setVisibility(View.GONE);
-                    new DownloadImage().execute(map.get("PhotoURL"));
+                    Picasso.with(login_activity.this).load(map.get("PhotoURL")).fit()          // If exists, it returns the photoURL of the particular user
+                            .into(signinProfilePicImageView, new Callback() {                  // and uses Piccaso library to set the image in the UI
+                                @Override
+                                public void onSuccess() {
+                                    findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+                                }
+
+                                @Override
+                                public void onError() {
+                                    Toast.makeText(login_activity.this,"Check your internet connectivity",Toast.LENGTH_LONG).show();
+
+                                }
+                            });
+                    findViewById(R.id.appTitleTextView).setVisibility(View.GONE);
+                    signinEmailTextView.setVisibility(View.VISIBLE);
+                    welcomeNoteTextView.setVisibility(View.VISIBLE);
+                    dialog.dismiss();
                 }
             }
 
@@ -213,40 +239,5 @@ public class login_activity extends AppCompatActivity implements DataDumper {
 
     }
 
-    class DownloadImage extends AsyncTask<String,Void,Bitmap>
-    {
 
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-
-            Bitmap bitmap;
-
-            try {
-                URL url=new URL(strings[0]);
-                URLConnection conn=url.openConnection();
-                conn.connect();
-                InputStream is=conn.getInputStream();
-                BufferedInputStream bis=new BufferedInputStream(is);
-                bitmap=BitmapFactory.decodeStream(bis);
-                return bitmap;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-            signinProfilePicImageView.setImageBitmap(bitmap);
-            findViewById(R.id.appTitleTextView).setVisibility(View.GONE);
-            signinEmailTextView.setVisibility(View.VISIBLE);
-            welcomeNoteTextView.setVisibility(View.VISIBLE);
-            dialog.dismiss();
-        }
-    }
 }

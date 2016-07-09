@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.RuntimeExecutionException;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -49,7 +50,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
             {
                 Uri uri=data.getData();
                 try {
-                    Bitmap bitmap= MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+                    Bitmap bitmap= MediaStore.Images.Media.getBitmap(getContentResolver(),uri);         // This handles the image fetching process
                     profilepicImageView.setImageBitmap(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -76,7 +77,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         imageView.buildDrawingCache();
 
         Bitmap bitmap=imageView.getDrawingCache();
-        ByteArrayOutputStream baos=new ByteArrayOutputStream();
+        ByteArrayOutputStream baos=new ByteArrayOutputStream();             //Converts the image in to stream and storing it into Firebase Storage
         bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
         byte[] data=baos.toByteArray();
 
@@ -87,13 +88,13 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
                 Log.e("ProfileImage","ProfilePic uploaded");
                 Log.e("SnapShot",taskSnapshot.toString());
                 photoURL=taskSnapshot.getDownloadUrl();
-                UploadData();
+                UploadData();                                   // Only when the users Dp is uploaded successfully, it uploads data in DataBase
             }
         });
 
     }
 
-    public void UploadData()
+    public void UploadData()                    // It uploads users data in a 'UserDetails' child of the Database Reference
     {
         Map<String,String> map=new HashMap<String,String>();
         map.put("Username",dumper.signupUsername);
@@ -125,7 +126,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent();
-                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setAction(Intent.ACTION_GET_CONTENT);       // This calls startActivityResult function to choose an image from the gallery
                 intent.setType("image/*");
                 startActivityForResult(intent,0);
             }
@@ -133,7 +134,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
 
     }
 
-    private void buttonActions() {
+    private void buttonActions() {                      // This handles all my button actions
         signupNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,7 +144,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
                 }
                 else
                 {
-                    signupAction();
+                    signupAction();  // If the input field is not empty, it invokes signupAction()
                 }
             }
         });
@@ -164,8 +165,8 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         {
             //e-mail
             signupInputLayout.setHint("Username");
-            signupInputField.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-            dumper.signupEmail=signupInputField.getText().toString();
+            signupInputField.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);       // Clickcount variable changes the UI with every increment
+            dumper.signupEmail=signupInputField.getText().toString();                       // userName
             signupInputField.setText("");
             count++;
         }
@@ -173,7 +174,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         {
             //username
             signupInputLayout.setHint("Password");
-            signupInputField.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            signupInputField.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);  //Password UI
             dumper.signupUsername=signupInputField.getText().toString();
             signupInputField.setText("");
             count++;
@@ -182,7 +183,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         {
             //password
             signupInputLayout.setHint("Mobile");
-            signupInputField.setInputType(InputType.TYPE_CLASS_NUMBER);
+            signupInputField.setInputType(InputType.TYPE_CLASS_NUMBER);         // Mobile number UI
             dumper.signupPassword=signupInputField.getText().toString();
             signupNextButton.setText("Sign up");
             signupInputField.setText("");
@@ -192,7 +193,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
         {
             //mobile
             dumper.signupMobile=signupInputField.getText().toString();
-            signupUser();
+            signupUser();                       // Finally signing up the user with the credentials extracted from the above UI
         }
     }
 
@@ -209,14 +210,14 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        UploadImageAndData(profilepicImageView);
+                        UploadImageAndData(profilepicImageView);               // Uploading data to dataBase and storing the DP to Firebase Storage
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 dialog.dismiss();
-                Toast.makeText(signup_activity.this,e.getMessage(),Toast.LENGTH_LONG).show();
-                count=0;
+                Toast.makeText(signup_activity.this,e.getMessage(),Toast.LENGTH_LONG).show();         // This function signs up the user
+                count=0;                                                                              // with the information obtained from the UI
                 signupInputLayout.setHint("Email");
                 signupInputField.setText("");
                 signupInputField.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
@@ -232,7 +233,7 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
             int randomNumber1=rand.nextInt((100000000-10000000)-1)+1;
             int randomNumber2=rand.nextInt((100000000-10000000)-1)+1;
 
-            String userID=username+Integer.toString(randomNumber1)+Integer.toString(randomNumber2);
+            String userID=username+Integer.toString(randomNumber1)+Integer.toString(randomNumber2);  // This generates a unique userId for each user when signs up
 
             return userID;
         }
@@ -248,9 +249,10 @@ public class signup_activity extends AppCompatActivity implements DataDumper {
     private void initialize() {
         profilepicImageView=(ImageView)findViewById(R.id.profilepicImageView);
         signupInputLayout=(TextInputLayout)findViewById(R.id.signupInputLayout);
-        signupInputField=(EditText)findViewById(R.id.signupInputField);
-        signupNextButton=(Button)findViewById(R.id.signupnextButton);
+        signupInputField=(EditText)findViewById(R.id.signupInputField);                 // Initialization of all the UI elements
+        signupNextButton=(Button)findViewById(R.id.signupnextButton);                   // required for the activity
         signupBackButton=(Button)findViewById(R.id.signupbackButton);
         dialog=new ProgressDialog(signup_activity.this);
+        dialog.setCanceledOnTouchOutside(false);
     }
 }
